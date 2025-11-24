@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 
 server = Flask(__name__)
-CORS(server, resources={
+CORS(server, resources={  # Allow POST/GET reqs from localhost to localhost
     r"/api/*": {
         "origins": ["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174", "http://127.0.0.1:5174"],
         "methods": ["GET", "POST", "OPTIONS"],
@@ -14,31 +14,29 @@ CORS(server, resources={
     }
 })
 
-# Authenticate users via JSON POST
+### Authenticate users via JSON POST ###
 @server.route("/api/v0/auth/login", methods=["POST"])
 def userAuth():
     credentials = request.get_json(silent=True)
-    if not credentials:
+    if not credentials:  # Check it's in json format/not malformed
         return jsonify({"success": False, "error": "Invalid JSON body"}), 400
-    
     username = (credentials.get('username') or '').strip()
     password = (credentials.get('password') or '').strip()
-    
-    if not username or not password:
+    if not username or not password:  # Return 400 if missing data
         return jsonify({"success": False, "error": "Username and password required"}), 400
-    
+        
+    # CHECK IF USER EXISTS IN USER SECTION OF USERS.JSON
+    # Open as read, load into "data" variable, check each username
     try:
         users_file = os.path.join(os.path.dirname(__file__), 'data', 'users', 'users.json')
         with open(users_file, 'r') as file:
             data = json.load(file)
-        
-        # Find user in the users array
         user_found = None
         for user in data.get('users', []):
             if user.get('username') == username:
                 user_found = user
                 break
-        
+        # If found, and if the db password matches the inputted password, provide a token using timestamp
         if user_found and user_found.get('password') == password:
             token = f"user_{username}_{int(datetime.now().timestamp())}"
             return jsonify({
@@ -48,33 +46,29 @@ def userAuth():
                 "token": token,
                 "profile": user_found.get('profile', {}),
                 "settings": user_found.get('settings', {}),
-                "permissions": user_found.get('permissions', [])
+                # TO-DO, probably not secure depending on what we use it for?
+                "permissions": user_found.get('permissions', []) 
             }), 200
-        else:
+        else:  # so we can display a nice lil error
             return jsonify({"success": False, "error": "Invalid username or password"}), 401
     except FileNotFoundError:
         return jsonify({"success": False, "error": "User database not found"}), 500
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-
-# Save user settings/profile back to users.json
+### RECEIVE UPDATE & SAVE USER SETTINGS/PROFILE BACK TO USERS.JSON ### certified githubgerald section
 @server.route("/api/v0/auth/save-settings", methods=["POST"])
 def saveUserSettings():
     data = request.get_json(silent=True)
     if not data:
         return jsonify({"success": False, "error": "Invalid JSON body"}), 400
-    
     username = (data.get('username') or '').strip()
     if not username:
         return jsonify({"success": False, "error": "Username required"}), 400
-    
     try:
         users_file = os.path.join(os.path.dirname(__file__), 'data', 'users', 'users.json')
         with open(users_file, 'r') as file:
             users_data = json.load(file)
-        
-        # Find and update user
         user_found = False
         for user in users_data.get('users', []):
             if user.get('username') == username:
@@ -100,8 +94,7 @@ def saveUserSettings():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-
-# Return public user info (profile + basic settings) by username
+### RETURN PUBLIC USER INFO (PROFILE + SETTINGS) BY USERNAME ###
 @server.route("/api/v0/users/<username>", methods=["GET"])
 def get_user_info(username):
     username = username.strip()
@@ -120,6 +113,7 @@ def get_user_info(username):
                     "username": user.get('username'),
                     "profile": user.get('profile', {}),
                     "settings": user.get('settings', {}),
+                    # TO-DO, probably not secure depending on what we use it for?
                     "permissions": user.get('permissions', [])
                 }), 200
 
@@ -128,6 +122,8 @@ def get_user_info(username):
         return jsonify({"success": False, "error": "User database not found"}), 500
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
+### CREATE CHAT FILE IF IT DOESN'T EXIST ### (probably temporary and we'll turn this into a POST req later)
 def ensure_chat_file(chat_id):
     filepath = f"./chats/{chat_id}.json"
     if not os.path.exists(filepath):
@@ -138,34 +134,30 @@ def ensure_chat_file(chat_id):
             }, f, indent=2)
     return filepath
 
-# GET: Retrieve all messages from a chat
-@server.route("/api/v0/chats/<int:chat_id>", methods=["GET"])
+### SERVE ENTIRE CHATLOG ### feels a bit scuffed but we'll find a more secure way to do it eventually
+@server.route("/api/v0/chats/<int:chat_id>", methods=["GET"])  # int for now but might do alphanumeric
 def get_chat(chat_id):
     filepath = ensure_chat_file(chat_id)
     try:
         with open(filepath, 'r') as file:
             data = json.load(file)
-        
-        if 'channel_name' not in data:
-            data['channel_name'] = f'Room {chat_id}'
-        
+        if 'channel_name' not in data:  # For older json files, this adds the channel_name field to it
+            data['channel_name'] = f'Room {chat_id}'  # probably not really needed now but nice to have
         return jsonify(data), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# POST: Add a new message to a chat OR rename channel
+### ADD NEW MESSAGE TO CHAT *OR* RENAME CHAT ###
 @server.route("/api/v0/chats/<int:chat_id>", methods=["POST"])
 def receive_msg(chat_id):
     filepath = ensure_chat_file(chat_id)
     new_data = request.json
-    
     # Check if this is a channel rename request
     if 'channel_name' in new_data and 'message' not in new_data:
         new_channel_name = new_data['channel_name'].strip()
-        
         if len(new_channel_name) == 0:
             return jsonify({"error": "Channel name cannot be empty"}), 400
-        
+        # no illegal chars and max length
         new_channel_name = new_channel_name[:30]
         new_channel_name = ''.join(c for c in new_channel_name if c.isalnum() or c in ' -_')
         
@@ -180,11 +172,10 @@ def receive_msg(chat_id):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
     
-    # Regular message
+    # For actual new messages
     with open(filepath, 'r') as file:
         data = json.load(file)
-        msg_len = len(data['messages'])
-
+        msg_len = len(data['messages'])  # for UID
     new_data['uid'] = msg_len
     new_data['timestamp'] = datetime.now().isoformat()
     new_data['date'] = datetime.now().strftime("%d/%m/%Y")
@@ -193,39 +184,32 @@ def receive_msg(chat_id):
     try:
         with open(filepath, 'r') as file:
             data = json.load(file)
-        
         if 'channel_name' not in data:
-            data['channel_name'] = f'Room {chat_id}'
-        
-        data['messages'].append(new_data)
-        
+            data['channel_name'] = f'Room {chat_id}'  # add channel name if missing
+        data['messages'].append(new_data)       
         with open(filepath, 'w') as file:
             json.dump(data, file, indent=2)
-        
         print(f"✅ Message {msg_len} added to chat {chat_id}")
         return jsonify({"success": True, "message": new_data}), 201
-    
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Serve React build files (for production)
+### SERVE WEBCLI ###
+# Serve React buil files (for prod)
 @server.route("/")
 def serve_react_app():
     return send_from_directory("dist", "index.html")
-
 @server.route("/<path:filename>")
 def serve_static(filename):
     return send_from_directory("dist", filename)
 
-# For development - also serve from static if needed
+# Temporary - will be handled by nginx most likely
 @server.route("/static/<path:filename>")
 def serve_static_files(filename):
     return send_from_directory("static", filename)
-
 @server.route("/assets/<asset_type>/<asset_file>", methods=["GET"])
 def get_webcli_assets(asset_type, asset_file):
     return send_from_directory(f"assets/{asset_type}", asset_file)
-
 # Serve user profile pictures from public/user_pfp
 @server.route("/user_pfp/<filename>", methods=["GET"])
 def get_user_pfp(filename):
