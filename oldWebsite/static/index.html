@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/assets/images/icon-primary.ico">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/settings-styles.css">
+    <link rel="stylesheet" href="/static/theme.css">
+    <title>wirechat</title>
+</head>
+
+<body>
+    <div class="settingsMenuWrapper" id="settingsMenuWrapper">
+        <!-- Dark overlay -->
+        <div class="settingsOverlay" onclick="closeSettings()"></div>
+
+        <div class="settingsMenu">
+            <!-- Close button -->
+            <button class="closeButton" onclick="closeSettings()">×</button>
+
+            <!-- Left sidebar navigation -->
+            <div class="settingsSidebar">
+                <div class="sidebarHeader">Settings</div>
+
+                <button class="settingsNavButton active" onclick="showSettingsSection('general')">
+                    General
+                </button>
+                <button class="settingsNavButton" onclick="showSettingsSection('privacy')">
+                    Privacy
+                </button>
+                <button class="settingsNavButton" onclick="showSettingsSection('notifications')">
+                    Notifications
+                </button>
+                <button class="settingsNavButton" onclick="showSettingsSection('chat')">
+                    Chat
+                </button>
+                <button class="settingsNavButton" onclick="showSettingsSection('appearance')">
+                    Appearance
+                </button>
+                <button class="settingsNavButton" onclick="showSettingsSection('personalization')">
+                    Personalization
+                </button>
+                <button class="settingsNavButton" onclick="showSettingsSection('data')">
+                    Data & Storage
+                </button>
+            </div>
+
+            <!-- Right content area - ADD ALL SECTIONS HERE -->
+            <div class="settingsContent">
+
+                <!-- General Section -->
+                <section class="settingsSection active" id="section-general">
+                    <h2>General Settings</h2>
+
+                    <label for="username">Username:</label>
+                    <input type="text" id="usernameInput" placeholder="Enter username">
+
+                    <label for="statusMessage">Status Message:</label>
+                    <input type="text" id="statusMessage" placeholder="What's on your mind?">
+
+                    <button class="saveButton" onclick="saveGeneralSettings()">Save Changes</button>
+                </section>
+
+                <!-- Privacy Section -->
+                <section class="settingsSection" id="section-privacy">
+                    <h2>Privacy Settings</h2>
+
+                    <div class="settingsGrid">
+                        <div class="settingsColumn">
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="showOnline" checked onchange="saveSettings()">
+                                <label for="showOnline">Show online status</label>
+                            </div>
+
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="readReceipts" checked onchange="saveSettings()">
+                                <label for="readReceipts">Send read receipts</label>
+                            </div>
+                        </div>
+
+                        <div class="settingsColumn">
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="typingIndicator" checked onchange="saveSettings()">
+                                <label for="typingIndicator">Show typing indicator</label>
+                            </div>
+
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="lastSeen" onchange="saveSettings()">
+                                <label for="lastSeen">Share last seen</label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notifications Section -->
+                <section class="settingsSection" id="section-notifications">
+                    <h2>Notification Settings</h2>
+
+                    <div class="settingsGrid">
+                        <div class="settingsColumn">
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="notifications" checked onchange="saveSettings()">
+                                <label for="notifications">Enable notifications</label>
+                            </div>
+
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="soundNotifications" checked onchange="saveSettings()">
+                                <label for="soundNotifications">Sound notifications</label>
+                            </div>
+                        </div>
+
+                        <div class="settingsColumn">
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="desktopNotifications" onchange="saveSettings()">
+                                <label for="desktopNotifications">Desktop notifications</label>
+                            </div>
+
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="mentionNotifications" checked onchange="saveSettings()">
+                                <label for="mentionNotifications">Notify on mentions only</label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Chat Section -->
+                <section class="settingsSection" id="section-chat">
+                    <h2>Chat Settings</h2>
+
+                    <div class="settingsGrid">
+                        <div class="settingsColumn">
+                            <label for="fontSize">Font Size:</label>
+                            <select id="fontSize" onchange="saveSettings()">
+                                <option value="small">Small</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="large">Large</option>
+                            </select>
+
+                            <label for="messageDisplay">Message Display:</label>
+                            <select id="messageDisplay" onchange="saveSettings()">
+                                <option value="compact">Compact</option>
+                                <option value="cozy" selected>Cozy</option>
+                                <option value="spacious">Spacious</option>
+                            </select>
+                        </div>
+
+                        <div class="settingsColumn">
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="enterToSend" checked onchange="saveSettings()">
+                                <label for="enterToSend">Press Enter to send</label>
+                            </div>
+
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="showTimestamps" checked onchange="saveSettings()">
+                                <label for="showTimestamps">Show message timestamps</label>
+                            </div>
+
+                            <div class="checkboxWrapper">
+                                <input type="checkbox" id="groupMessages" checked onchange="saveSettings()">
+                                <label for="groupMessages">Group consecutive messages</label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Appearance Section -->
+                <section class="settingsSection" id="section-appearance">
+                    <h2>Appearance Settings</h2>
+
+                    <label>Theme:</label>
+                    <div class="radioWrapper">
+                        <input type="radio" id="themeLight" name="theme" value="light" onchange="saveSettings()">
+                        <label for="themeLight">Light</label>
+                    </div>
+                    <div class="radioWrapper">
+                        <input type="radio" id="themeDark" name="theme" value="dark" checked onchange="saveSettings()">
+                        <label for="themeDark">Dark</label>
+                    </div>
+                    <div class="radioWrapper">
+                        <input type="radio" id="themeOled" name="theme" value="oled" onchange="saveSettings()">
+                        <label for="themeOled">OLED</label>
+                    </div>
+                </section>
+
+                <!-- Personalization Section -->
+                <section class="settingsSection" id="section-personalization">
+                    <h2>Personalization</h2>
+
+                    <div class="sliderWrapper">
+                        <label>
+                            <span>Primary Color</span>
+                            <span class="sliderValue" id="primaryValue">#66CCDA</span>
+                        </label>
+                        <input type="range" id="primaryHue" min="0" max="360" value="186"
+                            oninput="updateColor('primary', this.value)">
+                        <div class="colorPreview" id="primaryPreview" style="background-color: #66CCDA;"></div>
+                    </div>
+
+                    <div class="sliderWrapper">
+                        <label>
+                            <span>Secondary Color</span>
+                            <span class="sliderValue" id="secondaryValue">#0394BB</span>
+                        </label>
+                        <input type="range" id="secondaryHue" min="0" max="360" value="193"
+                            oninput="updateColor('secondary', this.value)">
+                        <div class="colorPreview" id="secondaryPreview" style="background-color: #0394BB;"></div>
+                    </div>
+
+                    <div class="sliderWrapper">
+                        <label>
+                            <span>User Message Color</span>
+                            <span class="sliderValue" id="userValue">#DD8E32</span>
+                        </label>
+                        <input type="range" id="userHue" min="0" max="360" value="30"
+                            oninput="updateColor('user', this.value)">
+                        <div class="colorPreview" id="userPreview" style="background-color: #DD8E32;"></div>
+                    </div>
+
+                    <div class="sliderWrapper">
+                        <label>
+                            <span>Others Message Color</span>
+                            <span class="sliderValue" id="othersValue">#13801D</span>
+                        </label>
+                        <input type="range" id="othersHue" min="0" max="360" value="124"
+                            oninput="updateColor('others', this.value)">
+                        <div class="colorPreview" id="othersPreview" style="background-color: #13801D;"></div>
+                    </div>
+                </section>
+
+                <!-- Data & Storage Section -->
+                <section class="settingsSection" id="section-data">
+                    <h2>Data & Storage</h2>
+
+                    <div class="checkboxWrapper">
+                        <input type="checkbox" id="autoDownload" onchange="saveSettings()">
+                        <label for="autoDownload">Auto-download media</label>
+                    </div>
+
+                    <div class="checkboxWrapper">
+                        <input type="checkbox" id="saveHistory" checked onchange="saveSettings()">
+                        <label for="saveHistory">Save chat history</label>
+                    </div>
+
+                    <button class="saveButton" onclick="downloadChatData()">Download Chat Data (JSON)</button>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="parent">
+        <div class="imageStyling">
+            <img>
+        </div>
+
+        <nav class="navbar">
+            <div class="icon"></div>
+            <span class="softwareName">wirechat</span>
+        </nav>
+
+        <div class="topBar">
+            <div class="topBarProfile">
+                <label for="pfpBtn" class="pfpImage"></label>
+                <input class="pfp" id="pfpBtn" type="button" />
+                <label onclick="openSettings()" for="settingsBtn" class="settingsImage"></label>
+                <input class="settings" id="settingsBtn" type="button" />
+            </div>
+            <div class="topBarChannel">
+                <form onsubmit="return channelNameChanger(event);">
+                    <input type="submit" id="channelSubmit" style="display: none" />
+                    <input class="channelText" id="channelName" type="text" placeholder="Channel Name">
+                    </input>
+                </form>
+            </div>
+            <div class="topBarTime">
+                <span id="timeTxt"></span>
+            </div>
+        </div>
+
+        <div class="chatsSection">
+            <div class="scrollable">
+                <input class="button" data-chat-id="1234" type="button" value="1234" />
+                <input class="button" data-chat-id="4321" type="button" value="" />
+            </div>
+        </div>
+
+        <div class="textSection">
+            <div class="scrollable">
+                <div class="pythonScript">
+                </div>
+            </div>
+        </div>
+
+        <div id="typingIndicator" class="typing-indicator"></div>
+
+        <div class="textInputSection">
+            <div class="messageButtonsWrapper">
+                <div class="chatButtonWrapper">
+                    <input id="chatBtn" name="chatButton" value="Chat" type="checkbox" checked />
+                    <label for="chatBtn">
+                        <span>Chat</span>
+                    </label>
+                </div>
+                <div class="shareButtonWrapper">
+                    <input id="shareBtn" name="shareButton" value="Share" type="checkbox" />
+                    <label for="shareBtn">
+                        <span>Share</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- CHAT MODE (Default) -->
+            <div id="chatMode">
+                <label for="fileUpload" class="fileUploadButton"></label>
+                <input class="fileUpload" id="fileUpload" type="file" multiple accept="image/*,video/*" />
+
+                <textarea class="inputBox" id="msgBox" name="messagebox" placeholder="Send a message"
+                    maxlength="140"></textarea>
+
+                <input class="button" id="txtSend" type="submit" value="Send" />
+
+                <div class="countWrapper">
+                    <p class="charCount">
+                        <span id="char">0</span>/140
+                    </p>
+                </div>
+            </div>
+
+            <!-- SHARE MODE (Giphy) -->
+            <div id="shareMode" style="display: none;">
+                <div class="giphyContainer">
+                    <div class="giphySearchBox">
+                        <input type="text" id="giphySearch" placeholder="Search GIFs..." class="giphySearchInput" />
+                    </div>
+                    <div id="giphyResults" class="giphyResults">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/small-things.js"></script>
+    <script src="/static/context-menu.js"></script>
+    <script src="/static/media-styles.js"></script>
+    <!--     <script src="/static/python-scripts.js"></script> -->
+    <script src="/static/chat-renderer.js"></script>
+    <script src="/static/settings-management.js"></script>
+</body>
+
+</html>

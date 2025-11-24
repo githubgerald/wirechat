@@ -1,0 +1,615 @@
+/* ===================== 
+   THEME & COLOR SYSTEM
+   Centralized theme and color management
+   All colors are defined here and updated dynamically
+   ===================== */
+
+/* ===================== 
+   ROOT CSS VARIABLES
+   These are dynamically updated by JavaScript
+   ===================== */
+
+:root {
+  /* Primary Brand Colors - Updated by settings */
+  --colour-primary: #66CCDA;
+  --colour-secondary: #0394BB;
+  --colour-primary-low-opacity: color-mix(in srgb, var(--colour-primary) 30%, transparent);
+  
+  /* User Role Colors - Updated by settings */
+  --colour-user: #DD8E32;
+  --colour-others: #13801D;
+  --colour-admin: #467592;
+  --colour-mention: #3a3af8;
+  
+  /* System Colors - Static */
+  --colour-success: #28a745;
+  --colour-danger: #dc3545;
+  --colour-warning: #ffc107;
+  
+  /* Neutral Colors - Theme dependent */
+  --colour-light: #f8f9fa;
+  --colour-dark: #343a40;
+  --colour-oled: #000000;
+  --colour-text-primary: #cccccc;
+  --colour-text-button: #000000;
+  
+  /* Semantic Colors - Use primary colors */
+  --border-color: var(--colour-primary);
+  --navbar-bg: var(--colour-primary);
+  --section-bg: var(--colour-dark);
+  
+  /* Settings-specific variables */
+  --message-font-size: 1.5rem;
+  --message-gap: 40px;
+  
+  /* Privacy & Behavior */
+  --typing-indicator-display: block;
+  --read-receipts-display: block;
+  --online-status-display: block;
+  
+  /* Notification styles */
+  --notification-sound-enabled: 1;
+  --desktop-notifications-enabled: 0;
+  
+  /* Input behavior */
+  --enter-to-send: 1;
+}
+
+/* ===================== 
+   LIGHT THEME
+   ===================== */
+
+body.theme-light {
+  --colour-light: #f8f9fa;
+  --colour-dark: #ffffff;
+  --colour-oled: #f0f0f0;
+  --colour-text-primary: #333333;
+  --colour-text-button: #000000;
+  --navbar-bg: var(--colour-primary);
+  --section-bg: #f8f9fa;
+  --border-color: var(--colour-primary);
+  background-color: #ffffff;
+}
+
+body.theme-light .navbar {
+  background-color: var(--navbar-bg);
+}
+
+body.theme-light .chatsSection,
+body.theme-light .textSection,
+body.theme-light .textInputSection {
+  background-color: var(--section-bg);
+}
+
+body.theme-light .topBar {
+  background-color: var(--section-bg);
+  border-bottom-color: var(--border-color);
+}
+
+body.theme-light .messageStyling {
+  color: var(--colour-text-primary);
+}
+
+body.theme-light .softwareName,
+body.theme-light .chatsText {
+  color: var(--colour-text-primary);
+}
+
+body.theme-light ::-webkit-scrollbar-track {
+  background-color: var(--section-bg);
+}
+
+body.theme-light .giphyResults p {
+  color: var(--colour-primary);
+}
+
+/* ===================== 
+   DARK THEME (Default)
+   ===================== */
+
+body.theme-dark {
+  --colour-light: #f8f9fa;
+  --colour-dark: #343a40;
+  --colour-oled: #2a2e33;
+  --colour-text-primary: #cccccc;
+  --colour-text-button: #000000;
+  --navbar-bg: var(--colour-primary);
+  --section-bg: #343a40;
+  --border-color: var(--colour-primary);
+  background-color: #343a40;
+}
+
+body.theme-dark .navbar {
+  background-color: var(--navbar-bg);
+}
+
+body.theme-dark .chatsSection,
+body.theme-dark .textSection,
+body.theme-dark .textInputSection {
+  background-color: var(--section-bg);
+}
+
+body.theme-dark .topBar {
+  background-color: var(--section-bg);
+  border-bottom-color: var(--border-color);
+}
+
+body.theme-dark .messageStyling {
+  color: var(--colour-light);
+}
+
+body.theme-dark .softwareName,
+body.theme-dark .chatsText {
+  color: var(--colour-text-primary);
+}
+
+body.theme-dark ::-webkit-scrollbar-track {
+  background-color: var(--section-bg);
+}
+
+/* ===================== 
+   OLED THEME
+   ===================== */
+
+body.theme-oled {
+  --colour-light: #ffffff;
+  --colour-dark: #000000;
+  --colour-oled: #000000;
+  --colour-text-primary: #ffffff;
+  --colour-text-button: #000000;
+  --navbar-bg: var(--colour-primary);
+  --section-bg: #000000;
+  --border-color: var(--colour-primary);
+  background-color: #000000;
+}
+
+body.theme-oled .navbar {
+  background-color: var(--navbar-bg);
+}
+
+body.theme-oled .chatsSection,
+body.theme-oled .textSection,
+body.theme-oled .textInputSection {
+  background-color: var(--section-bg);
+}
+
+body.theme-oled .topBar {
+  background-color: var(--section-bg);
+  border-bottom-color: var(--border-color);
+}
+
+body.theme-oled .messageStyling {
+  color: var(--colour-light);
+}
+
+body.theme-oled .softwareName,
+body.theme-oled .chatsText {
+  color: var(--colour-text-primary);
+}
+
+body.theme-oled ::-webkit-scrollbar-track {
+  background-color: var(--section-bg);
+}
+
+body.theme-oled .chatsSection {
+  border-right-color: var(--colour-primary);
+}
+
+body.theme-oled .topBarProfile,
+body.theme-oled .topBarChannel {
+  border-right-color: var(--colour-primary);
+}
+
+body.theme-oled .settingsImage {
+  filter: invert(1);
+}
+
+body.theme-oled .giphyResults p {
+  color: var(--colour-primary);
+}
+
+/* ===================== 
+   SMOOTH THEME TRANSITIONS
+   ===================== */
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body .navbar,
+body .chatsSection,
+body .textSection,
+body .textInputSection,
+body .topBar,
+body .messageStyling,
+body .softwareName,
+body .chatsText,
+body .inputBox,
+body .channelText {
+  transition: all 0.3s ease;
+}
+
+/* ===================== 
+   COLOR APPLICATIONS
+   Apply CSS variables to all elements
+   ===================== */
+
+/* Buttons */
+.button {
+  background-color: var(--colour-primary);
+  color: var(--colour-text-button);
+  border: solid 4px var(--colour-secondary);
+}
+
+.button:hover {
+  background-color: var(--colour-secondary);
+}
+
+.button:active {
+  border: solid 4px var(--colour-primary);
+}
+
+/* Navigation Bar */
+.navbar {
+  background-color: var(--navbar-bg);
+}
+
+.softwareName,
+.chatsText {
+  color: var(--colour-text-primary);
+}
+
+/* Top Bar */
+.topBar {
+  border-bottom: solid 2px var(--border-color);
+}
+
+.topBarProfile {
+  border-right: solid 2px var(--border-color);
+}
+
+.topBarChannel {
+  border-right: solid 2px var(--border-color);
+}
+
+.topBarTime {
+  color: var(--colour-primary);
+}
+
+.channelText {
+  border-left: solid 2px var(--border-color);
+  color: var(--colour-text-primary);
+}
+
+.channelText:focus {
+  caret-color: var(--colour-primary);
+}
+
+/* Chats Section */
+.chatsSection {
+  border-right: solid 2px var(--border-color);
+}
+
+.gapBetween {
+  color: var(--colour-primary);
+}
+
+/* Text Input */
+.textInputSection {
+  border-top: solid 8px var(--border-color);
+}
+
+.inputBox {
+  background-color: transparent;
+  color: var(--colour-text-primary);
+}
+
+.inputBox:focus {
+  caret-color: var(--colour-primary);
+}
+
+.charCount {
+  color: var(--colour-primary);
+}
+
+/* User Styling */
+#userStyling {
+  color: var(--colour-user);
+}
+
+#othersStyling {
+  color: var(--colour-others);
+}
+
+#adminStyling {
+  color: var(--colour-admin);
+}
+
+#mentionStyling {
+  color: var(--colour-mention);
+}
+
+.timeSent {
+  color: var(--colour-primary);
+}
+
+/* Message Buttons */
+.chatButtonWrapper label,
+.shareButtonWrapper label {
+  border-top: solid 8px var(--colour-primary-low-opacity);
+  border-right: solid 8px var(--colour-primary-low-opacity);
+  border-bottom: solid 8px var(--colour-primary);
+  border-left: solid 8px var(--colour-primary-low-opacity);
+  color: var(--colour-primary);
+  transition: none;
+  box-sizing: border-box;
+}
+
+.chatButtonWrapper input:checked ~ label,
+.shareButtonWrapper input:checked ~ label {
+  border-top: solid 8px var(--colour-primary);
+  border-right: solid 8px var(--colour-primary);
+  border-bottom: solid 8px var(--section-bg); 
+  border-left: solid 8px var(--colour-primary);
+  color: var(--colour-primary);
+  transition: none;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  background-color: var(--colour-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--colour-primary);
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--colour-dark);
+}
+
+/* Media Elements */
+.media-container {
+  border: 2px solid var(--border-color);
+}
+
+.video-controls {
+  background: linear-gradient(
+    to right,
+    var(--colour-primary) 0%,
+    var(--colour-primary) 50%,
+    var(--colour-secondary) 50%,
+    var(--colour-secondary) 100%
+  );
+}
+
+.volume-container {
+  background: var(--colour-primary);
+}
+
+.volume-indicator {
+  background: var(--colour-primary);
+  color: var(--colour-dark);
+}
+
+.volume-button:hover .volume-indicator {
+  background-color: var(--colour-secondary);
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  background: var(--colour-primary);
+  color: var(--colour-text-button);
+}
+
+/* Giphy Search */
+.giphySearchInput {
+  background-color: var(--colour-dark);
+  border: 2px solid var(--colour-primary);
+  color: var(--colour-light);
+}
+
+.giphySearchInput:focus {
+  border-color: var(--colour-secondary);
+  box-shadow: 0 0 10px rgba(102, 204, 218, 0.3);
+}
+
+.giphySearchInput::placeholder {
+  color: var(--colour-text-primary);
+}
+
+.giphy-result:hover {
+  border-color: var(--colour-primary);
+  box-shadow: 0 0 15px rgba(102, 204, 218, 0.5);
+}
+
+/* Profile Popup */
+.profilePopup {
+  background: var(--colour-dark);
+  border: 2px solid var(--colour-primary);
+}
+
+.profileHeader {
+  border-bottom: 1px solid var(--colour-primary);
+}
+
+.profilePicture {
+  background: var(--colour-primary);
+  color: var(--colour-dark);
+}
+
+.profileName {
+  color: var(--colour-primary);
+}
+
+.profileRole {
+  color: var(--colour-text-primary);
+}
+
+.profileDetails .label {
+  color: var(--colour-text-primary);
+}
+
+.profileDetails .value {
+  color: var(--colour-light);
+}
+
+.profileActions {
+  border-top: 1px solid var(--colour-primary);
+}
+
+.profileActions button {
+  background: var(--colour-primary);
+  border: 2px solid var(--colour-secondary);
+  color: var(--colour-text-button);
+}
+
+.profileActions button:hover {
+  background: var(--colour-secondary);
+}
+
+.closePopup {
+  color: var(--colour-primary);
+}
+
+.closePopup:hover {
+  background: var(--colour-primary);
+  color: var(--colour-dark);
+}
+
+/* Settings Menu */
+.settingsMenu {
+  background: var(--section-bg);
+  border: 2px solid var(--colour-primary);
+}
+
+.settingsSidebar {
+  border-right: 2px solid var(--colour-primary);
+}
+
+.sidebarHeader {
+  color: var(--colour-primary);
+  border-bottom: 1px solid var(--colour-primary);
+}
+
+.settingsNavButton {
+  color: var(--colour-text-primary);
+}
+
+.settingsNavButton:hover {
+  border-color: var(--colour-primary);
+}
+
+.settingsNavButton.active {
+  background: var(--colour-primary);
+  color: var(--colour-text-button);
+  border-color: var(--colour-secondary);
+}
+
+.settingsSection h2 {
+  color: var(--colour-primary);
+  border-bottom: 2px solid var(--colour-primary);
+}
+
+.settingsSection label {
+  color: var(--colour-text-primary);
+}
+
+.settingsSection input[type="text"],
+.settingsSection input[type="email"],
+.settingsSection select {
+  border-color: #666;
+}
+
+.settingsSection input[type="text"]:focus,
+.settingsSection input[type="email"]:focus,
+.settingsSection select:focus {
+  border-color: var(--colour-primary);
+}
+
+.sliderValue {
+  color: var(--colour-primary);
+}
+
+.saveButton {
+  background-color: var(--colour-primary);
+  color: var(--colour-text-button);
+  border: solid 4px var(--colour-secondary);
+}
+
+.saveButton:hover {
+  background-color: var(--colour-secondary);
+}
+
+.closeButton {
+  background-color: var(--colour-danger);
+}
+
+.closeButton:hover {
+  background-color: darkred;
+}
+
+.settingsSidebar::-webkit-scrollbar-thumb,
+.settingsContent::-webkit-scrollbar-thumb {
+  background: var(--colour-primary);
+}
+
+.settingsSidebar::-webkit-scrollbar-thumb:hover,
+.settingsContent::-webkit-scrollbar-thumb:hover {
+  background: var(--colour-secondary);
+}
+
+/* Context Menu */
+.contextMenu {
+  --menu-border: rgba(255, 255, 255, 0.08);
+  --menu-bg: linear-gradient(
+    45deg,
+    rgba(10, 20, 28, 0.2) 0%,
+    rgba(10, 20, 28, 0.7) 100%
+  );
+  --item-border: rgba(255, 255, 255, 0.1);
+  --item-color: #fff;
+  --item-bg-hover: rgba(255, 255, 255, 0.1);
+}
+
+.contextMenu[data-theme="light"] {
+  --menu-bg: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.85) 100%
+  );
+  --menu-border: rgba(0, 0, 0, 0.08);
+  --item-border: rgba(0, 0, 0, 0.1);
+  --item-color: rgb(10, 20, 28);
+  --item-bg-hover: rgba(10, 20, 28, 0.09);
+}
+
+/* Active Chat Highlight */
+.button.active-chat {
+  background-color: var(--colour-secondary);
+  border-color: var(--colour-primary);
+}
+
+/* Online Status Indicator */
+.online-status {
+  display: var(--online-status-display);
+  background: var(--colour-success);
+}
+
+/* Read Receipts */
+.read-receipt {
+  display: var(--read-receipts-display);
+  color: var(--colour-primary);
+}
+
+/* Message Styling with Dynamic Font Size */
+.messageStyling {
+  font-size: var(--message-font-size);
+  transition: font-size 0.3s ease;
+}
+
+/* Message Spacing with Dynamic Gap */
+.pythonScript {
+  margin-bottom: var(--message-gap);
+  transition: margin-bottom 0.3s ease;
+}
