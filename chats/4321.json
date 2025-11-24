@@ -1,0 +1,23 @@
+{
+  "channel_name": "Random",
+  "messages": [
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "Did you see the latest updates?",
+      "timestamp": "2025-11-24T11:00:00",
+      "date": "24/11/2025",
+      "time": "11:00",
+      "uid": 0
+    },
+    {
+      "username": "anri",
+      "userType": "user",
+      "message": "Not yet, what's new?",
+      "timestamp": "2025-11-24T11:01:00",
+      "date": "24/11/2025",
+      "time": "11:01",
+      "uid": 1
+    }
+  ]
+}

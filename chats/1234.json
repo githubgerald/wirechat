@@ -1,0 +1,203 @@
+{
+  "channel_name": "General",
+  "messages": [
+    {
+      "username": "anri",
+      "userType": "user",
+      "message": "Hey everyone! Welcome to the chat.",
+      "timestamp": "2025-11-24T10:30:00",
+      "date": "24/11/2025",
+      "time": "10:30",
+      "uid": 0
+    },
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "Thanks for the welcome!",
+      "timestamp": "2025-11-24T10:31:00",
+      "date": "24/11/2025",
+      "time": "10:31",
+      "uid": 1
+    },
+    {
+      "username": "anri",
+      "userType": "user",
+      "message": "No problem. Let's get started.",
+      "timestamp": "2025-11-24T10:32:00",
+      "date": "24/11/2025",
+      "time": "10:32",
+      "uid": 2
+    },
+    {
+      "username": "e",
+      "userType": "user",
+      "message": "test",
+      "time": "02:28",
+      "date": "24/11/2025",
+      "uid": 3,
+      "timestamp": "2025-11-24T02:28:05.438861"
+    },
+    {
+      "username": "e",
+      "userType": "user",
+      "message": "tyest",
+      "time": "02:29",
+      "date": "24/11/2025",
+      "uid": 4,
+      "timestamp": "2025-11-24T02:29:59.278947"
+    },
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "test",
+      "time": "04:16",
+      "date": "24/11/2025",
+      "uid": 5,
+      "timestamp": "2025-11-24T04:16:18.716412"
+    },
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "test",
+      "time": "04:17",
+      "date": "24/11/2025",
+      "uid": 6,
+      "timestamp": "2025-11-24T04:17:33.303888"
+    },
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "test",
+      "time": "04:17",
+      "date": "24/11/2025",
+      "uid": 7,
+      "timestamp": "2025-11-24T04:17:43.333866"
+    },
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "test",
+      "time": "04:18",
+      "date": "24/11/2025",
+      "uid": 8,
+      "timestamp": "2025-11-24T04:18:14.892031"
+    },
+    {
+      "username": "Guest",
+      "userType": "user",
+      "message": "test",
+      "time": "04:21",
+      "date": "24/11/2025",
+      "uid": 9,
+      "timestamp": "2025-11-24T04:21:45.345682"
+    },
+    {
+      "username": "Guest",
+      "userType": "user",
+      "message": "test",
+      "time": "04:26",
+      "date": "24/11/2025",
+      "uid": 10,
+      "timestamp": "2025-11-24T04:26:34.106132"
+    },
+    {
+      "username": "Guest",
+      "userType": "user",
+      "message": "test",
+      "time": "04:30",
+      "date": "24/11/2025",
+      "uid": 11,
+      "timestamp": "2025-11-24T04:30:29.595286"
+    },
+    {
+      "username": "Guest",
+      "userType": "user",
+      "message": "test",
+      "time": "04:30",
+      "date": "24/11/2025",
+      "uid": 12,
+      "timestamp": "2025-11-24T04:30:42.448046"
+    },
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "test",
+      "time": "04:32",
+      "date": "24/11/2025",
+      "uid": 13,
+      "timestamp": "2025-11-24T04:32:06.333886"
+    },
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "test",
+      "time": "04:32",
+      "date": "24/11/2025",
+      "uid": 14,
+      "timestamp": "2025-11-24T04:32:13.832999"
+    },
+    {
+      "username": "anri",
+      "userType": "user",
+      "message": "test",
+      "time": "04:32",
+      "date": "24/11/2025",
+      "uid": 15,
+      "timestamp": "2025-11-24T04:32:23.058677"
+    },
+    {
+      "username": "anri",
+      "userType": "user",
+      "message": "test",
+      "time": "04:41",
+      "date": "24/11/2025",
+      "uid": 16,
+      "timestamp": "2025-11-24T04:41:10.453024"
+    },
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "test",
+      "time": "04:45",
+      "date": "24/11/2025",
+      "uid": 17,
+      "timestamp": "2025-11-24T04:45:29.804550"
+    },
+    {
+      "username": "anri",
+      "userType": "user",
+      "message": "test",
+      "time": "04:45",
+      "date": "24/11/2025",
+      "uid": 18,
+      "timestamp": "2025-11-24T04:45:41.312805"
+    },
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "test",
+      "time": "04:46",
+      "date": "24/11/2025",
+      "uid": 19,
+      "timestamp": "2025-11-24T04:46:33.425376"
+    },
+    {
+      "username": "anri",
+      "userType": "user",
+      "message": "test",
+      "time": "04:46",
+      "date": "24/11/2025",
+      "uid": 20,
+      "timestamp": "2025-11-24T04:46:38.999809"
+    },
+    {
+      "username": "cam",
+      "userType": "user",
+      "message": "test",
+      "time": "06:25",
+      "date": "24/11/2025",
+      "uid": 21,
+      "timestamp": "2025-11-24T06:25:31.230602"
+    }
+  ]
+}

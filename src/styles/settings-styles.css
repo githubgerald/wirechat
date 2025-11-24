@@ -1,0 +1,80 @@
+/* ===================== 
+    SETTINGS STYLES
+    All colors are managed in theme-colors.css
+   ===================== */
+/* ===================== 
+    Application of Settings
+   ===================== */
+.messageStyling {
+  font-size: var(--message-font-size);
+  transition: font-size 0.3s ease;
+}
+
+.pythonScript {
+  margin-bottom: var(--message-gap);
+  transition: margin-bottom 0.3s ease;
+}
+
+.topBarChannel {
+  border-right: solid 2px var(--border-color);
+  white-space: nowrap;
+  margin-left: 10px;
+  text-align: left;
+}
+.topBarChannel .channelText {
+  font-size: 1.5rem;
+  padding: 0 5px;
+  width: 100%;
+  height: 90%;
+  background-color: transparent;
+  border: none;
+  border-left: solid 2px var(--border-color);
+}
+.topBarChannel .channelText::-moz-placeholder {
+  font-size: 1.5rem !important;
+}
+.topBarChannel .channelText::placeholder {
+  font-size: 1.5rem !important;
+}
+
+.typing-indicator {
+  display: var(--typing-indicator-display);
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: "VT323";
+  font-size: 1.125rem;
+  z-index: 1000;
+}
+.typing-indicator.show {
+  display: block;
+  animation: fadeInUp 0.3s ease;
+}
+
+.read-receipt {
+  display: var(--read-receipts-display);
+  font-size: 0.8em;
+  margin-left: 5px;
+}
+
+.online-status {
+  display: var(--online-status-display);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

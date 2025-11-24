@@ -1,0 +1,76 @@
+// src/styles/_variables.scss
+// All SCSS variables for the project
+
+// Fonts
+$font-primary: 'LoveLetter';
+$font-secondary: 'OpenSans', sans-serif;
+$font-mono: 'VT323';
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Text Sizes
+$text-sm: 1.125rem;
+$text-md: 1.5rem;
+$text-lg: 1.725rem;
+
+// Layout
+$grid-chats-width: 200px;
+$grid-input-height: 150px;
+
+// Image Sizes
+$img-sm: 64px;
+$img-md: 128px;
+$img-lg: 256px;
+
+// Borders
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-width: 2px;
+
+// Buttons
+$btn-padding-top: 0.5rem;
+$btn-padding-bottom: 1rem;
+$btn-font-size: $text-md;
+$btn-border-radius: $border-radius-md;
+$btn-height: 2.5rem;
+
+// Navbar
+$navbar-height: 60px;
+$navbar-padding-top: 0.5rem;
+$navbar-padding-bottom: 1rem;
+
+// Sections
+$section-padding-top: 3rem;
+$section-padding-bottom: 1rem;
+
+// Spacing
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+
+// Shadows
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+// Transitions
+$transition-fast: 150ms ease-in-out;
+$transition-base: 250ms ease-in-out;
+$transition-slow: 350ms ease-in-out;
+
+// Settings-specific variables
+$settings-overlay-opacity: 0.8;
+$settings-transition-duration: 0.3s;
+
+// Font size variables
+$font-size-small: 1.0rem;
+$font-size-medium: 1.5rem;
+$font-size-large: 2.0rem;
+
+// Message spacing variables
+$message-spacing-compact: 20px;
+$message-spacing-cozy: 40px;
+$message-spacing-spacious: 60px;

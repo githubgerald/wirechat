@@ -1,0 +1,209 @@
+/* React-specific styles and overrides */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Loading screen */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-size: 18px;
+  color: white;
+  font-weight: 500;
+}
+
+/* Logout button in navbar */
+.logout-button {
+  background: none;
+  border: none;
+  color: var(--colour-text-primary);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px 12px;
+  margin-left: auto;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.logout-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.logout-button:active {
+  transform: scale(0.95);
+}
+
+/* React component specific styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--section-bg);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--colour-text-primary);
+}
+
+.modal-title {
+  margin-bottom: 1rem;
+  color: var(--colour-primary);
+  font-family: 'LoveLetter', sans-serif;
+}
+
+/* Smooth transitions for React state changes */
+.button {
+  transition: all 0.3s ease;
+}
+
+.media-wrapper {
+  transition: transform 0.2s ease;
+}
+
+/* Loading states */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--colour-primary);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error states */
+.error {
+  border-color: var(--colour-danger) !important;
+  color: var(--colour-danger);
+}
+
+.error-message {
+  color: var(--colour-danger);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Success states */
+.success {
+  border-color: var(--colour-success) !important;
+  color: var(--colour-success);
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+  .parent {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  
+  .chatsSection {
+    grid-row: auto;
+    grid-column: 1;
+  }
+  
+  .textSection {
+    grid-row: auto;
+    grid-column: 1;
+  }
+  
+  .settingsMenu {
+    grid-template-columns: 1fr;
+  }
+  
+  .settingsSidebar {
+    display: none;
+  }
+}
+
+/* Accessibility improvements */
+.button:focus-visible,
+.inputBox:focus-visible,
+.channelText:focus-visible {
+  outline: 2px solid var(--colour-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border-width: 3px;
+  }
+  
+  .button {
+    border-width: 3px;
+  }
+}
+
+/* Dark mode auto detection */
+@media (prefers-color-scheme: dark) {
+  body:not(.theme-light):not(.theme-oled) {
+    /* System dark mode will use our dark theme by default */
+    z-index: 1;
+  }
+}

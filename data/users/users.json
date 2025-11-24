@@ -1,0 +1,80 @@
+{
+  "users": [
+    {
+      "username": "anri",
+      "password": "password",
+      "profile": {
+        "pfp": "blond.jpg",
+        "bio": "Anri's profile",
+        "color": "#66CCDA"
+      },
+      "settings": {
+        "username": null,
+        "statusMessage": "",
+        "showOnline": true,
+        "readReceipts": true,
+        "typingIndicator": true,
+        "lastSeen": false,
+        "notifications": true,
+        "soundNotifications": true,
+        "desktopNotifications": false,
+        "mentionNotifications": true,
+        "fontSize": "medium",
+        "messageDisplay": "cozy",
+        "enterToSend": true,
+        "showTimestamps": true,
+        "groupMessages": true,
+        "theme": "oled",
+        "primaryColor": "#E36C5F",
+        "secondaryColor": "#D99126",
+        "userColor": "#A926D9",
+        "othersColor": "#26D985",
+        "autoDownload": false,
+        "saveHistory": true
+      },
+      "permissions": [
+        "send_messages",
+        "read_messages",
+        "edit_own_messages"
+      ]
+    },
+    {
+      "username": "cam",
+      "password": "password",
+      "profile": {
+        "pfp": "ado.jpg",
+        "bio": "Cam's profile",
+        "color": "#FF6B6B"
+      },
+      "settings": {
+        "username": null,
+        "statusMessage": "",
+        "showOnline": true,
+        "readReceipts": true,
+        "typingIndicator": true,
+        "lastSeen": false,
+        "notifications": true,
+        "soundNotifications": true,
+        "desktopNotifications": false,
+        "mentionNotifications": true,
+        "fontSize": "medium",
+        "messageDisplay": "cozy",
+        "enterToSend": true,
+        "showTimestamps": true,
+        "groupMessages": true,
+        "theme": "dark",
+        "primaryColor": "#6A5FE3",
+        "secondaryColor": "#2659D9",
+        "userColor": "#D9C726",
+        "othersColor": "#26D985",
+        "autoDownload": false,
+        "saveHistory": true
+      },
+      "permissions": [
+        "send_messages",
+        "read_messages",
+        "edit_own_messages"
+      ]
+    }
+  ]
+}
