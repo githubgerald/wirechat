@@ -2,6 +2,41 @@ import React from 'react';
 import MediaWrapper from '../media/MediaWrapper';
 import { makeYouTubeEmbedUrl, extractFirstUrlFromText } from '../../utils/linkUtils';
 
+// Function to detect URLs and convert them to clickable links
+const renderTextWithLinks = (text) => {
+  if (!text) return text;
+
+  // URL regex pattern
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  
+  // Split text by URLs and map to elements
+  const parts = text.split(urlRegex);
+  
+  return parts.map((part, index) => {
+    if (part.match(urlRegex)) {
+      // It's a URL - make it a clickable link
+      return (
+        <a 
+          key={index}
+          href={part} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{ 
+            color: 'var(--colour-primary)',
+            textDecoration: 'underline',
+            wordBreak: 'break-all'
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+        </a>
+      );
+    }
+    // It's regular text
+    return part;
+  });
+};
+
 const Message = ({ message, messageGroup }) => {
   // Handle both single messages and grouped messages
   const isGrouped = !!messageGroup;
@@ -84,10 +119,24 @@ const Message = ({ message, messageGroup }) => {
                 <em style={{ color: 'var(--colour-text-primary, #888)' }}>[deleted]</em>
               ) : (
                 <>
-                  {msg.message}
+                  {/* Render message text with clickable links */}
+                  {msg.message && !msg.mediaType && !msg.media && (
+                    <div className="message-text">
+                      {renderTextWithLinks(msg.message)}
+                    </div>
+                  )}
+                  
+                  {/* If message has text AND media, render text above media */}
+                  {msg.message && (msg.mediaType || msg.media) && (
+                    <div className="message-text">
+                      {renderTextWithLinks(msg.message)}
+                    </div>
+                  )}
+                  
                   {msg.mediaType && msg.mediaUrl && (
                     <MediaWrapper mediaType={msg.mediaType} mediaUrl={msg.mediaUrl} alt={msg.message} />
                   )}
+                  
                   {/* If the message contains multiple media items (array), render as a grid */}
                   {Array.isArray(msg.media) && msg.media.length > 0 && (
                     (() => {
@@ -104,24 +153,12 @@ const Message = ({ message, messageGroup }) => {
                       );
                     })()
                   )}
+                  
                   {/* If the message text contains a YouTube link, embed it automatically */}
                   {!msg.mediaType && msg.message && (() => {
-                    const firstUrl = extractFirstUrlFromText(msg.message);
-                    if (firstUrl) {
-                      const embed = makeYouTubeEmbedUrl(firstUrl);
-                      if (embed) {
-                        return (
-                          <div className="youtube-embed-container">
-                            <MediaWrapper 
-                              mediaType="youtube" 
-                              mediaUrl={embed} 
-                              alt={msg.message} 
-                            />
-                          </div>
-                        );
-                      }
-                    }
-                    return null;
+                    const firstUrl = extractFirstUrlFromText(msg.message) || msg.message;
+                    const embed = makeYouTubeEmbedUrl(firstUrl);
+                    return embed ? <MediaWrapper mediaType="youtube" mediaUrl={embed} alt={msg.message} /> : null;
                   })()}
                 </>
               )}

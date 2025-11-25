@@ -820,7 +820,7 @@ html::-webkit-scrollbar {
   grid-column: span 5 / span 5;
   grid-column-start: 1;
   grid-row-start: 1;
-  padding: 18px;
+  padding: 18px 0px;
   display: flex;
   align-items: center;
 
@@ -836,28 +836,38 @@ html::-webkit-scrollbar {
 
   .softwareName {
     font-family: $font-primary;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 
   .logout-button {
     background: none;
     border: none;
+    border-radius: 0px;
     color: var(--colour-text-primary);
     font-size: 20px;
     cursor: pointer;
-    margin-right: -18px;
     margin-left: auto;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    transform: scale(1.1);
 
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
-      transform: scale(1.1);
+    }
+
+    &:focus {
+      outline: none;
     }
 
     &:active {
-      transform: scale(0.95);
+      outline: none;
     }
   }
 }
@@ -872,6 +882,9 @@ html::-webkit-scrollbar {
   gap: 0;
   align-items: center;
   font-size: $text-lg;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 
   .topBarProfile {
     padding: 5px 0;
@@ -879,6 +892,7 @@ html::-webkit-scrollbar {
     justify-content: left;
     align-items: center;
     gap: 10px;
+    
 
     .pfpImage {
       border-radius: 50px;
@@ -925,6 +939,7 @@ html::-webkit-scrollbar {
     text-align: left;
     border-right: solid $border-width var(--border-color);
     padding-right: 10px;
+    
 
     .channelText {
       font-size: $text-md;
@@ -977,14 +992,6 @@ html::-webkit-scrollbar {
     height: 0;
   }
 
-  .chatsText {
-    font-family: $font-primary;
-    display: block;
-    text-align: center;
-    padding-bottom: $section-padding-bottom;
-    flex-shrink: 0;
-  }
-
   .button {
     padding: 8px 12px;
     margin: 8px auto;
@@ -995,6 +1002,9 @@ html::-webkit-scrollbar {
     width: 160px;
     flex-shrink: 0;
     text-align: center;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 
   .button.active-chat {
@@ -1222,6 +1232,29 @@ html::-webkit-scrollbar {
         text-align: left;
         grid-column: 4;
         align-self: start;
+
+        .message-text {
+          
+          a {
+            color: var(--colour-primary);
+            text-decoration: underline;
+            transition: all 0.2s ease;
+            word-break: break-all;
+            
+            &:hover {
+              color: var(--colour-secondary);
+              text-decoration: none;
+            }
+            
+            &:visited {
+              color: var(--colour-admin);
+            }
+            
+            &:active {
+              transform: scale(0.98);
+            }
+          }
+        }
       }
     }
   }
@@ -1296,6 +1329,9 @@ html::-webkit-scrollbar {
     height: 8vh;
     resize: none;
     overflow: hidden;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 
     &:focus {
       border: none;
@@ -1309,6 +1345,9 @@ html::-webkit-scrollbar {
 
   .button {
     position: absolute;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 }
 
@@ -1320,6 +1359,9 @@ html::-webkit-scrollbar {
   .charCount {
     font-family: $font-mono;
     font-size: $text-md;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 }
 
