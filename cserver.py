@@ -186,11 +186,79 @@ def receive_msg(chat_id):
             data = json.load(file)
         if 'channel_name' not in data:
             data['channel_name'] = f'Room {chat_id}'  # add channel name if missing
-        data['messages'].append(new_data)       
+        data['messages'].append(new_data)
         with open(filepath, 'w') as file:
             json.dump(data, file, indent=2)
         print(f"✅ Message {msg_len} added to chat {chat_id}")
         return jsonify({"success": True, "message": new_data}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@server.route("/api/v0/chats/<int:chat_id>/edit", methods=["POST"])
+def edit_msg(chat_id):
+    filepath = ensure_chat_file(chat_id)
+    new_data = request.get_json(silent=True)
+    if not new_data:
+        return jsonify({"error": "Invalid JSON body"}), 400
+    uid = new_data.get('uid')
+    if uid is None:
+        return jsonify({"error": "Message UID required"}), 400
+    try:
+        with open(filepath, 'r') as file:
+            data = json.load(file)
+        found = False
+        for msg in data.get('messages', []):
+            if msg.get('uid') == uid:
+                # Merge any provided fields into the message (except uid)
+                for k, v in new_data.items():
+                    if k == 'uid':
+                        continue
+                    msg[k] = v
+                # Mark as edited for audit when message text changed
+                if 'message' in new_data:
+                    msg['edited'] = True
+                found = True
+                break
+        if not found:
+            return jsonify({"error": "Message not found"}), 404
+        with open(filepath, 'w') as file:
+            json.dump(data, file, indent=2)
+        return jsonify({"success": True, "message": msg}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@server.route("/api/v0/chats/<int:chat_id>/delete", methods=["POST"])
+def delete_msg(chat_id):
+    filepath = ensure_chat_file(chat_id)
+    new_data = request.get_json(silent=True)
+    if not new_data:
+        return jsonify({"error": "Invalid JSON body"}), 400
+    uid = new_data.get('uid')
+    if uid is None:
+        return jsonify({"error": "Message UID required"}), 400
+    try:
+        with open(filepath, 'r') as file:
+            data = json.load(file)
+        found = False
+        for msg in data.get('messages', []):
+            if msg.get('uid') == uid:
+                # Soft-delete: mark deleted and clear content
+                msg['deleted'] = True
+                msg['message'] = ''
+                # Clear single-media fields (older messages) and multi-media arrays
+                msg['mediaType'] = None
+                msg['mediaUrl'] = None
+                if 'media' in msg:
+                    msg['media'] = []
+                found = True
+                break
+        if not found:
+            return jsonify({"error": "Message not found"}), 404
+        with open(filepath, 'w') as file:
+            json.dump(data, file, indent=2)
+        return jsonify({"success": True}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

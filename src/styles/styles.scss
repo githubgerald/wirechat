@@ -220,13 +220,16 @@ html::-webkit-scrollbar {
 
   &:hover {
     transition: $transition-slow;
-    border-radius: 50px;
+  }
+  
+  &:focus {
+    outline: 0
   }
 
   &:active {
     transition: all 0.01s;
+
     -webkit-transition: all 0.01s;
-    border-radius: 50px;
   }
 }
 
@@ -811,15 +814,14 @@ html::-webkit-scrollbar {
     background: none;
     border: none;
     color: var(--colour-text-primary);
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
-    padding: 8px 12px;
+    margin-right: -18px;
     margin-left: auto;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
 
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
@@ -958,21 +960,17 @@ html::-webkit-scrollbar {
   .button {
     padding: 8px 12px;
     margin: 8px auto;
-    position: relative;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     min-height: 40px;
-    width: 160px; /* fixed width so buttons stay same size */
+    width: 160px;
     flex-shrink: 0;
     text-align: center;
   }
 
   .button.active-chat {
-    background: var(--colour-primary);
-    color: var(--colour-text-on-primary, #fff);
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    border: solid 4px var(--colour-secondary);
   }
 
   .scrollable {
@@ -1385,4 +1383,264 @@ html::-webkit-scrollbar {
   width: 100%;
   height: 100%;
   position: relative;
+}
+
+/* ===================== 
+   Image Gallery & Lightbox
+   ===================== */
+
+// Image Gallery (for messages with multiple images)
+.image-gallery {
+  display: grid;
+  gap: 4px;
+  margin-top: $spacing-sm;
+  width: 100%;
+  max-width: 400px;
+
+  &-single {
+    grid-template-columns: 1fr;
+
+    .image-gallery-item {
+      max-width: 280px;
+      max-height: 280px;
+    }
+  }
+
+  &-double {
+    grid-template-columns: repeat(2, 1fr);
+
+    .image-gallery-item {
+      max-width: 198px;
+      max-height: 198px;
+    }
+  }
+
+  &-triple {
+    grid-template-columns: repeat(2, 1fr);
+    
+    .image-gallery-item:first-child {
+      grid-column: 1 / -1;
+      max-width: 400px;
+      max-height: 280px;
+    }
+
+    .image-gallery-item:not(:first-child) {
+      max-width: 198px;
+      max-height: 198px;
+    }
+  }
+
+  &-grid {
+    grid-template-columns: repeat(2, 1fr);
+
+    .image-gallery-item {
+      max-width: 198px;
+      max-height: 198px;
+    }
+  }
+}
+
+.image-gallery-item {
+  position: relative;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--colour-oled);
+  transition: transform $transition-fast, box-shadow $transition-fast;
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: $shadow-md;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.image-gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+// Image Lightbox (full-size viewer)
+.image-lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn $transition-fast;
+  cursor: zoom-out;
+}
+
+.image-lightbox-content {
+  position: relative;
+  max-width: 95vw;
+  max-height: 95vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.image-lightbox-img {
+  max-width: 95vw;
+  max-height: 95vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: $border-radius-md;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all $transition-fast;
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// File Preview (before sending)
+.file-preview-container {
+  display: flex;
+  gap: 8px;
+  margin: 8px;
+  padding: 8px;
+  background: var(--colour-dark);
+  border-radius: $border-radius-md;
+  overflow-x: auto;
+  max-width: calc(100% - 16px);
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--colour-primary);
+    border-radius: 3px;
+  }
+}
+
+.file-preview-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: $border-radius-sm;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--colour-oled);
+  cursor: pointer;
+  transition: transform $transition-fast;
+
+  &:hover {
+    transform: scale(1.05);
+
+    .file-preview-remove {
+      opacity: 1;
+    }
+  }
+}
+
+.file-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.file-preview-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  opacity: 0;
+  transition: all $transition-fast;
+  z-index: 2;
+
+  &:hover {
+    background: rgba(255, 0, 0, 0.8);
+    transform: scale(1.1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Update existing media-wrapper for single images
+.media-wrapper {
+  &[data-media-type="image"] {
+    width: auto;
+    max-width: 280px;
+
+    .media-container {
+      width: 100%;
+      height: auto;
+      max-width: 280px;
+      max-height: 280px;
+      cursor: pointer;
+      transition: transform $transition-fast, box-shadow $transition-fast;
+
+      &:hover {
+        transform: scale(1.02);
+        box-shadow: $shadow-md;
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
+    .media-content {
+      width: 100%;
+      height: auto;
+      max-width: 280px;
+      max-height: 280px;
+      object-fit: contain;
+    }
+  }
 }

@@ -2,20 +2,20 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from '../../context/ChatContext';
 import { useSettings } from '../../context/SettingsContext';
 import { searchGiphy, formatGiphyResults, createGiphyMessage } from '../../utils/giphyUtils';
+import FilePreview from '../media/FilePreview';
 
 const TextInputSection = () => {
   const [activeMode, setActiveMode] = useState('chat');
   const [message, setMessage] = useState('');
-  const [selectedFiles, setSelectedFiles] = useState([]); // Add this line
   const msgBoxRef = useRef(null);
-  const { sendMessage } = useChat();
+  const { sendMessage, selectedFiles, setSelectedFiles } = useChat();
   const { settings } = useSettings();
 
   const handleSend = async () => {
     if (message.trim() || selectedFiles.length > 0) {
       await sendMessage(message.trim());
       setMessage('');
-      setSelectedFiles([]); // Clear files after send
+      setSelectedFiles([]);
     }
   };
 
@@ -32,7 +32,10 @@ const TextInputSection = () => {
     setActiveMode(mode);
   };
 
-  // Expose a global insertMention function so the profile popup can insert @mentions
+  const handleRemoveFile = (index) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
   React.useEffect(() => {
     window.insertMention = (username) => {
       if (!username) return;
@@ -40,7 +43,6 @@ const TextInputSection = () => {
         const next = `${prev}${prev && !prev.endsWith(' ') ? ' ' : ''}@${username} `;
         return next;
       });
-      // focus the message box if available
       try {
         if (msgBoxRef && msgBoxRef.current) {
           msgBoxRef.current.focus();
@@ -69,6 +71,7 @@ const TextInputSection = () => {
           onKeyPress={handleKeyPress}
           selectedFiles={selectedFiles}
           setSelectedFiles={setSelectedFiles}
+          onRemoveFile={handleRemoveFile}
           msgBoxRef={msgBoxRef}
         />
       ) : (
@@ -109,7 +112,7 @@ const MessageButtonsWrapper = ({ activeMode, onModeChange }) => {
   );
 };
 
-  const ChatMode = ({ message, onMessageChange, onSend, onKeyPress, selectedFiles, setSelectedFiles, msgBoxRef }) => {
+const ChatMode = ({ message, onMessageChange, onSend, onKeyPress, selectedFiles, setSelectedFiles, onRemoveFile, msgBoxRef }) => {
   const [charCount, setCharCount] = useState(0);
   const textareaRef = msgBoxRef || useRef(null);
 
@@ -130,6 +133,8 @@ const MessageButtonsWrapper = ({ activeMode, onModeChange }) => {
 
   return (
     <div id="chatMode">
+      <FilePreview files={selectedFiles} onRemove={onRemoveFile} />
+      
       <label htmlFor="fileUpload" className="fileUploadButton"></label>
       <input 
         className="fileUpload" 
@@ -176,8 +181,6 @@ const ShareMode = () => {
   const handleMouseWheel = (e) => {
     if (giphyResultsRef.current) {
       e.preventDefault();
-      // Scroll right/left based on wheel direction
-      // Using a much larger multiplier (5x) for responsive scrolling
       giphyResultsRef.current.scrollLeft += e.deltaY * 5;
     }
   };
@@ -186,7 +189,6 @@ const ShareMode = () => {
     const container = giphyResultsRef.current;
     if (!container) return;
 
-    // Add non-passive event listener to allow preventDefault
     container.addEventListener('wheel', handleMouseWheel, { passive: false });
 
     return () => {
@@ -197,7 +199,6 @@ const ShareMode = () => {
   const handleGiphySearch = async (query) => {
     setSearchQuery(query);
 
-    // Clear previous timeout
     if (giphySearchTimeout) {
       clearTimeout(giphySearchTimeout);
     }
@@ -207,7 +208,6 @@ const ShareMode = () => {
       return;
     }
 
-    // Debounce: wait 500ms after user stops typing
     const timeout = setTimeout(async () => {
       setIsSearching(true);
       console.log("🔍 Searching Giphy for:", query);
@@ -245,7 +245,6 @@ const ShareMode = () => {
 
       console.log("✅ GIF sent!");
 
-      // Clear search and reload messages
       setSearchQuery("");
       setGiphyResults([]);
       await loadMessages();

@@ -26,31 +26,6 @@ code {
   font-weight: 500;
 }
 
-/* Logout button in navbar */
-.logout-button {
-  background: none;
-  border: none;
-  color: var(--colour-text-primary);
-  font-size: 24px;
-  cursor: pointer;
-  padding: 8px 12px;
-  margin-left: auto;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-}
-
-.logout-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: scale(1.1);
-}
-
-.logout-button:active {
-  transform: scale(0.95);
-}
-
 /* React component specific styles */
 .modal-overlay {
   position: fixed;

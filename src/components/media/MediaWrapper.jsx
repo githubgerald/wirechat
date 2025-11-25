@@ -1,19 +1,35 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import VideoControls from './VideoControls';
+import ImageLightbox from './ImageLightbox';
 
 const MediaWrapper = ({ mediaType, mediaUrl }) => {
   const mediaRef = useRef(null);
+  const [showLightbox, setShowLightbox] = useState(false);
 
   if (!mediaType || !mediaUrl) return null;
 
   if (mediaType === 'image') {
     return (
-      <div className="media-wrapper" data-media-type="image">
-        <div className="media-container">
-          <img src={mediaUrl} alt="Shared content" className="media-content" ref={mediaRef} />
-          <div className="grain-overlay"></div>
+      <>
+        <div className="media-wrapper" data-media-type="image">
+          <div className="media-container" onClick={() => setShowLightbox(true)}>
+            <img
+              src={mediaUrl} 
+              alt="Shared content" 
+              className="media-content" 
+              ref={mediaRef} 
+            />
+            <div className="grain-overlay"></div>
+          </div>
         </div>
-      </div>
+        
+        {showLightbox && (
+          <ImageLightbox 
+            imageUrl={mediaUrl} 
+            onClose={() => setShowLightbox(false)} 
+          />
+        )}
+      </>
     );
   }
 

@@ -246,7 +246,7 @@ body .channelText {
 }
 
 .button:active {
-  border: solid 4px var(--colour-primary);
+  border: solid 4px var(--colour-secondary);
 }
 
 /* Navigation Bar */

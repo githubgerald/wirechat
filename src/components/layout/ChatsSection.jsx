@@ -19,7 +19,6 @@ const ChatsSection = () => {
   return (
     <div className="chatsSection">
       <div className="scrollable">
-        <span className="chatsText">Chats</span>
         {chatRooms.map(room => (
           <button
             key={room.id}

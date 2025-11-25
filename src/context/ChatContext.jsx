@@ -13,19 +13,16 @@ export const useChat = () => {
 
 export const ChatProvider = ({ children }) => {
   const [currentChatId, setCurrentChatId] = useLocalStorage('currentChatId', null);
-  const [messages, setMessages] = useState({});  // Use regular state, not localStorage (prevents quota errors)
+  const [messages, setMessages] = useState({});
   const [channelNames, setChannelNames] = useLocalStorage('channelNames', {});
   const [isTyping, setIsTyping] = useState(false);
   const [typingUser, setTypingUser] = useState('');
-  // Use 'username' key (same as LoginPage sets it)
   const [currentUsername, setCurrentUsername] = useLocalStorage('username', 'Guest');
   const [selectedFiles, setSelectedFiles] = useState([]);
-  // User profile, settings, and permissions from localStorage
   const [userProfile, setUserProfile] = useLocalStorage('userProfile', {});
   const [userSettings, setUserSettings] = useLocalStorage('userSettings', {});
   const [userPermissions, setUserPermissions] = useLocalStorage('userPermissions', []);
 
-  // Point to Flask server on port 5000
   const API_BASE_URL = "http://localhost:5000/api/v0/chats/";
 
   const getApiUrl = useCallback(() => {
@@ -35,7 +32,6 @@ export const ChatProvider = ({ children }) => {
 
   const chatSelect = useCallback((chatId) => {
     setCurrentChatId(chatId);
-    // Load messages for the selected chat
     loadMessages(chatId);
   }, [setCurrentChatId]);
 
@@ -130,7 +126,7 @@ export const ChatProvider = ({ children }) => {
     const messageData = {
       username: currentUsername,
       userType: userType,
-      message: messageText || `Shared ${file.name}`,
+      message: messageText,
       mediaType: mediaType,
       mediaUrl: base64Data,
       fileName: file.name,
@@ -193,7 +189,6 @@ export const ChatProvider = ({ children }) => {
   };
 
   const value = {
-    // State
     currentChatId,
     messages: messages[currentChatId] || [],
     channelNames,
@@ -205,7 +200,6 @@ export const ChatProvider = ({ children }) => {
     userSettings,
     userPermissions,
     
-    // Actions
     chatSelect,
     sendMessage,
     updateChannelName,

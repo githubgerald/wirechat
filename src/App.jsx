@@ -9,6 +9,7 @@ import TextInputSection from './components/layout/TextInputSection';
 import SettingsMenu from './components/settings/SettingsMenu';
 import LoginPage from './components/auth/LoginPage';
 import './styles/globals.css';
+import ContextMenu from './components/ui/ContextMenu';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -57,6 +58,7 @@ function App() {
           <ChatsSection />
           <TextSection />
           <TextInputSection />
+          <ContextMenu />
           <SettingsMenu />
         </div>
       </ChatProvider>
