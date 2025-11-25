@@ -106,9 +106,22 @@ const Message = ({ message, messageGroup }) => {
                   )}
                   {/* If the message text contains a YouTube link, embed it automatically */}
                   {!msg.mediaType && msg.message && (() => {
-                    const firstUrl = extractFirstUrlFromText(msg.message) || msg.message;
-                    const embed = makeYouTubeEmbedUrl(firstUrl);
-                    return embed ? <MediaWrapper mediaType="youtube" mediaUrl={embed} alt={msg.message} /> : null;
+                    const firstUrl = extractFirstUrlFromText(msg.message);
+                    if (firstUrl) {
+                      const embed = makeYouTubeEmbedUrl(firstUrl);
+                      if (embed) {
+                        return (
+                          <div className="youtube-embed-container">
+                            <MediaWrapper 
+                              mediaType="youtube" 
+                              mediaUrl={embed} 
+                              alt={msg.message} 
+                            />
+                          </div>
+                        );
+                      }
+                    }
+                    return null;
                   })()}
                 </>
               )}

@@ -2,11 +2,30 @@ import React, { useRef, useState } from 'react';
 import VideoControls from './VideoControls';
 import ImageLightbox from './ImageLightbox';
 
-const MediaWrapper = ({ mediaType, mediaUrl }) => {
+const MediaWrapper = ({ mediaType, mediaUrl, alt }) => {
   const mediaRef = useRef(null);
   const [showLightbox, setShowLightbox] = useState(false);
 
   if (!mediaType || !mediaUrl) return null;
+
+  // Handle YouTube embeds
+  if (mediaType === 'youtube' || (mediaUrl && mediaUrl.includes('youtube'))) {
+    return (
+      <div className="media-wrapper" data-media-type="youtube">
+        <div className="media-container">
+          <iframe
+            src={mediaUrl}
+            title={alt || "YouTube video"}
+            className="media-content youtube-embed"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+          <div className="grain-overlay"></div>
+        </div>
+      </div>
+    );
+  }
 
   if (mediaType === 'image') {
     return (
@@ -15,7 +34,7 @@ const MediaWrapper = ({ mediaType, mediaUrl }) => {
           <div className="media-container" onClick={() => setShowLightbox(true)}>
             <img
               src={mediaUrl} 
-              alt="Shared content" 
+              alt={alt || "Shared content"} 
               className="media-content" 
               ref={mediaRef} 
             />

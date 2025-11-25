@@ -13,16 +13,19 @@ export const useChat = () => {
 
 export const ChatProvider = ({ children }) => {
   const [currentChatId, setCurrentChatId] = useLocalStorage('currentChatId', null);
-  const [messages, setMessages] = useState({});
+  const [messages, setMessages] = useState({});  // Use regular state, not localStorage (prevents quota errors)
   const [channelNames, setChannelNames] = useLocalStorage('channelNames', {});
   const [isTyping, setIsTyping] = useState(false);
   const [typingUser, setTypingUser] = useState('');
+  // Use 'username' key (same as LoginPage sets it)
   const [currentUsername, setCurrentUsername] = useLocalStorage('username', 'Guest');
   const [selectedFiles, setSelectedFiles] = useState([]);
+  // User profile, settings, and permissions from localStorage
   const [userProfile, setUserProfile] = useLocalStorage('userProfile', {});
   const [userSettings, setUserSettings] = useLocalStorage('userSettings', {});
   const [userPermissions, setUserPermissions] = useLocalStorage('userPermissions', []);
 
+  // Point to Flask server on port 5000
   const API_BASE_URL = "http://localhost:5000/api/v0/chats/";
 
   const getApiUrl = useCallback(() => {
@@ -32,6 +35,7 @@ export const ChatProvider = ({ children }) => {
 
   const chatSelect = useCallback((chatId) => {
     setCurrentChatId(chatId);
+    // Load messages for the selected chat
     loadMessages(chatId);
   }, [setCurrentChatId]);
 
@@ -56,14 +60,14 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  const sendMessage = async (messageText, userType = 'user') => {
+  const sendMessage = async (messageText, userType = 'user', filesArg = null) => {
     if (!currentChatId) {
       alert("Please select a chat room first!");
       return false;
     }
 
-    const hasText = messageText && messageText.trim() !== "";
-    const hasFiles = selectedFiles.length > 0;
+  const hasText = messageText && messageText.trim() !== "";
+  const hasFiles = filesArg ? filesArg.length > 0 : selectedFiles.length > 0;
 
     if (!hasText && !hasFiles) {
       console.warn("No message or files to send");
@@ -71,11 +75,10 @@ export const ChatProvider = ({ children }) => {
     }
 
     try {
-      // Handle file uploads
+      // Handle file uploads: send all files in a single message as an array
       if (hasFiles) {
-        for (const file of selectedFiles) {
-          await sendMessageWithFile(messageText || "", file, userType);
-        }
+        const filesToSend = filesArg ? filesArg : selectedFiles;
+        await sendMessageWithFiles(messageText || "", filesToSend, userType);
         setSelectedFiles([]);
       } else {
         // Send text-only message
@@ -108,6 +111,92 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
+  const sendMessageWithFiles = async (messageText, files, userType = 'user') => {
+    // Convert all files to base64 and attach as a media array
+    const media = [];
+    for (const file of files) {
+      let mediaType = null;
+      if (file.type.startsWith("image/")) mediaType = 'image';
+      else if (file.type.startsWith("video/")) mediaType = 'video';
+
+      const reader = new FileReader();
+      const base64Data = await new Promise((resolve) => {
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+
+      media.push({
+        mediaType,
+        mediaUrl: base64Data,
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type
+      });
+    }
+
+    const messageData = {
+      username: currentUsername,
+      userType: userType,
+      message: messageText || (files.length === 1 ? `Shared ${files[0].name}` : `Shared ${files.length} files`),
+      media: media,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      date: new Date().toLocaleDateString()
+    };
+
+    const response = await fetch(getApiUrl(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(messageData)
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload files');
+    }
+  };
+
+  const editMessage = async (uid, fields) => {
+    // fields can be { message: 'text' } or any keys to merge into the message
+    if (!currentChatId) {
+      alert('Select a chat first');
+      return false;
+    }
+    try {
+      const payload = { uid, ...fields };
+      const response = await fetch(`${API_BASE_URL}${currentChatId}/edit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error('Failed to edit message');
+      await loadMessages(currentChatId);
+      return true;
+    } catch (err) {
+      console.error('Error editing message:', err);
+      return false;
+    }
+  };
+
+  const deleteMessage = async (uid) => {
+    if (!currentChatId) {
+      alert('Select a chat first');
+      return false;
+    }
+    try {
+      const payload = { uid };
+      const response = await fetch(`${API_BASE_URL}${currentChatId}/delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error('Failed to delete message');
+      await loadMessages(currentChatId);
+      return true;
+    } catch (err) {
+      console.error('Error deleting message:', err);
+      return false;
+    }
+  };
+
   const sendMessageWithFile = async (messageText, file, userType = 'user') => {
     let mediaType = null;
     if (file.type.startsWith("image/")) {
@@ -126,7 +215,7 @@ export const ChatProvider = ({ children }) => {
     const messageData = {
       username: currentUsername,
       userType: userType,
-      message: messageText,
+      message: messageText || `Shared ${file.name}`,
       mediaType: mediaType,
       mediaUrl: base64Data,
       fileName: file.name,
@@ -189,6 +278,7 @@ export const ChatProvider = ({ children }) => {
   };
 
   const value = {
+    // State
     currentChatId,
     messages: messages[currentChatId] || [],
     channelNames,
@@ -200,8 +290,11 @@ export const ChatProvider = ({ children }) => {
     userSettings,
     userPermissions,
     
+    // Actions
     chatSelect,
     sendMessage,
+  editMessage,
+  deleteMessage,
     updateChannelName,
     handleTyping,
     clearChat,
