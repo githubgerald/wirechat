@@ -3,6 +3,7 @@ import { useChat } from '../../context/ChatContext';
 import { useSettings } from '../../context/SettingsContext';
 import { searchGiphy, formatGiphyResults, createGiphyMessage } from '../../utils/giphyUtils';
 import FilePreview from '../media/FilePreview';
+import MentionSuggestions from '../chat/MentionSuggestions';
 
 const TextInputSection = () => {
   const [activeMode, setActiveMode] = useState('chat');
@@ -114,25 +115,123 @@ const MessageButtonsWrapper = ({ activeMode, onModeChange }) => {
 
 const ChatMode = ({ message, onMessageChange, onSend, onKeyPress, selectedFiles, setSelectedFiles, onRemoveFile, msgBoxRef }) => {
   const [charCount, setCharCount] = useState(0);
+  const [mentionSuggestions, setMentionSuggestions] = useState({
+    visible: false,
+    position: { x: 0, y: 0 },
+    searchTerm: ''
+  });
   const textareaRef = msgBoxRef || useRef(null);
+  const { users } = useChat();
 
   React.useEffect(() => {
     setCharCount(message ? message.length : 0);
   }, [message]);
 
-  const handleMessageChange = (e) => {
-    const value = e.target.value;
-    onMessageChange(value);
-    setCharCount(value.length);
-  };
-
+  // ADD THE MISSING handleFileSelect FUNCTION
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
     setSelectedFiles(files);
   };
 
+  const handleMessageChange = (e) => {
+    const value = e.target.value;
+    onMessageChange(value);
+    setCharCount(value.length);
+    
+    // Handle mention suggestions
+    handleMentionDetection(value, e.target);
+  };
+
+  const handleMentionDetection = (text, textarea) => {
+    const cursorPosition = textarea.selectionStart;
+    const textBeforeCursor = text.substring(0, cursorPosition);
+    
+    // Find the last @ symbol before cursor
+    const lastAtPos = textBeforeCursor.lastIndexOf('@');
+    
+    if (lastAtPos !== -1) {
+      // Check if @ is not part of a word (preceded by space or start of string)
+      const charBeforeAt = textBeforeCursor[lastAtPos - 1];
+      if (!charBeforeAt || charBeforeAt === ' ' || charBeforeAt === '\n') {
+        const textAfterAt = textBeforeCursor.substring(lastAtPos + 1);
+        // Check if there's no space after @ (meaning we're typing a username)
+        if (!textAfterAt.includes(' ')) {
+          // Calculate position for suggestions
+          const textareaRect = textarea.getBoundingClientRect();
+          const textBeforeMention = textBeforeCursor.substring(0, lastAtPos);
+          
+          // Create a temporary span to measure text width
+          const tempSpan = document.createElement('span');
+          tempSpan.style.font = getComputedStyle(textarea).font;
+          tempSpan.style.visibility = 'hidden';
+          tempSpan.style.whiteSpace = 'pre-wrap';
+          tempSpan.textContent = textBeforeMention;
+          document.body.appendChild(tempSpan);
+          
+          const textWidth = tempSpan.offsetWidth;
+          document.body.removeChild(tempSpan);
+          
+          setMentionSuggestions({
+            visible: true,
+            position: {
+              x: textareaRect.left + textWidth + 20, // Add some padding
+              y: textareaRect.top - 200 // Position above cursor
+            },
+            searchTerm: textAfterAt
+          });
+          return;
+        }
+      }
+    }
+    
+    // Hide suggestions if conditions aren't met
+    setMentionSuggestions(prev => ({ ...prev, visible: false }));
+  };
+
+  const handleMentionSelect = (username) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    
+    const currentText = message;
+    const cursorPosition = textarea.selectionStart;
+    const textBeforeCursor = currentText.substring(0, cursorPosition);
+    
+    // Find the last @ position
+    const lastAtPos = textBeforeCursor.lastIndexOf('@');
+    
+    if (lastAtPos !== -1) {
+      // Replace from @ to current cursor position with @username
+      const newText = 
+        currentText.substring(0, lastAtPos) + 
+        `@${username} ` + 
+        currentText.substring(cursorPosition);
+      
+      onMessageChange(newText);
+      
+      // Focus and set cursor after the mention
+      setTimeout(() => {
+        const newCursorPos = lastAtPos + username.length + 2; // @ + username + space
+        textarea.focus();
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+      }, 0);
+    }
+    
+    setMentionSuggestions({ visible: false, position: { x: 0, y: 0 }, searchTerm: '' });
+  };
+
+  const handleKeyDown = (e) => {
+    // Close mention suggestions on escape
+    if (e.key === 'Escape' && mentionSuggestions.visible) {
+      setMentionSuggestions(prev => ({ ...prev, visible: false }));
+      e.preventDefault();
+      return;
+    }
+    
+    onKeyPress(e);
+  };
+
   return (
-    <div id="chatMode">
+    <div id="chatMode" style={{ position: 'relative' }}>
       <FilePreview files={selectedFiles} onRemove={onRemoveFile} />
       
       <label htmlFor="fileUpload" className="fileUploadButton"></label>
@@ -149,12 +248,20 @@ const ChatMode = ({ message, onMessageChange, onSend, onKeyPress, selectedFiles,
         className="inputBox" 
         id="msgBox" 
         name="messagebox" 
-        placeholder="Send a message"
+        placeholder="Send a message - use @ to mention users"
         maxLength="140"
         value={message}
         onChange={handleMessageChange}
+        onKeyDown={handleKeyDown}
         ref={textareaRef}
-        onKeyPress={onKeyPress}
+      />
+
+      <MentionSuggestions
+        visible={mentionSuggestions.visible}
+        position={mentionSuggestions.position}
+        searchTerm={mentionSuggestions.searchTerm}
+        onSelect={handleMentionSelect}
+        onClose={() => setMentionSuggestions(prev => ({ ...prev, visible: false }))}
       />
 
       <button className="button" id="txtSend" onClick={onSend}>
@@ -171,6 +278,7 @@ const ChatMode = ({ message, onMessageChange, onSend, onKeyPress, selectedFiles,
 };
 
 const ShareMode = () => {
+  // ... keep your existing ShareMode implementation ...
   const { sendMessage, currentUsername, loadMessages } = useChat();
   const [giphyResults, setGiphyResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);

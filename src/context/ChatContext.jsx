@@ -60,6 +60,49 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
+  // Add user list state
+  const [users, setUsers] = useState([]);
+
+  // Function to get unique users from messages
+  const updateUserList = useCallback(() => {
+    if (!messages[currentChatId]) return;
+    
+    const uniqueUsers = new Set();
+    messages[currentChatId].forEach(msg => {
+      if (msg.username && msg.username !== 'Guest') {
+        uniqueUsers.add(msg.username);
+      }
+    });
+    
+    // Add current user if not already in list
+    if (currentUsername && currentUsername !== 'Guest') {
+      uniqueUsers.add(currentUsername);
+    }
+    
+    setUsers(Array.from(uniqueUsers).sort());
+  }, [messages, currentChatId, currentUsername]);
+
+  // Update user list when messages change
+  useEffect(() => {
+    updateUserList();
+  }, [updateUserList]);
+
+  // Function to handle mentions in message text
+  const parseMentions = useCallback((text) => {
+    if (!text) return { text, mentions: [] };
+    
+    const mentionRegex = /@(\w+)/g;
+    const mentions = [];
+    let match;
+    
+    while ((match = mentionRegex.exec(text)) !== null) {
+      mentions.push(match[1]); // username without @
+    }
+    
+    return { text, mentions };
+  }, []);
+
+
   const sendMessage = async (messageText, userType = 'user', filesArg = null) => {
     if (!currentChatId) {
       alert("Please select a chat room first!");
@@ -152,6 +195,24 @@ export const ChatProvider = ({ children }) => {
     if (!response.ok) {
       throw new Error('Failed to upload files');
     }
+  };
+
+   const sendMessageWithMentions = async (messageText, userType = 'user', filesArg = null) => {
+    const { mentions } = parseMentions(messageText);
+    
+    // If there are mentions, highlight them in the message
+    let processedMessage = messageText;
+    if (mentions.length > 0) {
+      mentions.forEach(username => {
+        processedMessage = processedMessage.replace(
+          new RegExp(`@${username}`, 'g'),
+          `@${username}`
+        );
+      });
+    }
+
+    // Send the message using existing function
+    return await sendMessage(processedMessage, userType, filesArg);
   };
 
   const editMessage = async (uid, fields) => {
@@ -279,6 +340,7 @@ export const ChatProvider = ({ children }) => {
 
   const value = {
     // State
+    users,
     currentChatId,
     messages: messages[currentChatId] || [],
     channelNames,
@@ -292,9 +354,11 @@ export const ChatProvider = ({ children }) => {
     
     // Actions
     chatSelect,
-    sendMessage,
-  editMessage,
-  deleteMessage,
+    sendMessage: sendMessageWithMentions,
+    parseMentions,
+    updateUserList,
+    editMessage,
+    deleteMessage,
     updateChannelName,
     handleTyping,
     clearChat,

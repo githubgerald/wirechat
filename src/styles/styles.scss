@@ -1029,6 +1029,84 @@ html::-webkit-scrollbar {
   }
 }
 
+.mention-suggestions {
+  position: fixed;
+  left: 260px;
+  bottom: 100px;
+  z-index: 1000;
+  background: var(--section-bg);
+  border: 2px solid var(--colour-primary);
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-lg;
+  max-height: 100px;
+  overflow-y: auto;
+  min-width: 150px;
+}
+
+.mention-suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: $font-secondary;
+  font-size: $text-sm;
+  
+  &:hover {
+    background-color: var(--colour-primary-low-opacity);
+  }
+  
+  &.no-results {
+    color: var(--colour-text-primary);
+    opacity: 0.7;
+    cursor: default;
+    
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}
+
+.mention-username {
+  color: var(--colour-primary);
+  font-weight: $font-weight-semibold;
+}
+
+/* Message Mentions */
+.message-mention {
+  color: var(--colour-mention) !important;
+  font-weight: $font-weight-bold;
+  padding: 1px 4px;
+  border-radius: $border-radius-sm;
+  background-color: color-mix(in srgb, var(--colour-mention) 10%, transparent);
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: color-mix(in srgb, var(--colour-mention) 20%, transparent);
+    transform: translateY(-1px);
+  }
+}
+
+/* Input box mention styling */
+.inputBox {
+  // Ensure mentions are visible while typing
+  .message-mention {
+    background-color: transparent;
+  }
+}
+
+/* Scrollbar for mention suggestions */
+.mention-suggestions::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mention-suggestions::-webkit-scrollbar-track {
+  background: var(--colour-dark);
+}
+
+.mention-suggestions::-webkit-scrollbar-thumb {
+  background: var(--colour-primary);
+  border-radius: 3px;
+}
+
 .profilePopup {
   position: fixed;
   border-radius: $border-radius-md;

@@ -37,6 +37,116 @@ const renderTextWithLinks = (text) => {
   });
 };
 
+// Function to handle mentions
+const renderTextWithMentions = (text) => {
+  if (!text) return text;
+
+  // Mention regex pattern
+  const mentionRegex = /(@\w+)/g;
+  
+  const parts = text.split(mentionRegex);
+  
+  return parts.map((part, index) => {
+    if (part.match(mentionRegex)) {
+      // It's a mention
+      const username = part.substring(1); // Remove @
+      return (
+        <span 
+          key={index}
+          className="message-mention"
+          style={{ 
+            color: 'var(--colour-mention)',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            // Optional: Add click handler for mentions
+            if (window.showProfilePopup) {
+              const rect = e.currentTarget.getBoundingClientRect();
+              window.showProfilePopup(username, 'user', {
+                x: rect.left,
+                y: rect.bottom + 10
+              });
+            }
+          }}
+          title={`Mention: ${part}`}
+        >
+          {part}
+        </span>
+      );
+    }
+    return part;
+  });
+};
+
+// Combined function for both links and mentions
+const renderFormattedText = (text) => {
+  if (!text) return text;
+  
+  // First, split by URLs
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const urlParts = text.split(urlRegex);
+  
+  return urlParts.map((part, index) => {
+    if (part.match(urlRegex)) {
+      // It's a URL - render as link
+      return (
+        <a 
+          key={index}
+          href={part} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{ 
+            color: 'var(--colour-primary)',
+            textDecoration: 'underline',
+            wordBreak: 'break-all'
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+        </a>
+      );
+    } else {
+      // It's text that might contain mentions - render mentions
+      const mentionRegex = /(@\w+)/g;
+      const mentionParts = part.split(mentionRegex);
+      
+      return mentionParts.map((subPart, subIndex) => {
+        if (subPart.match(mentionRegex)) {
+          // It's a mention
+          const username = subPart.substring(1);
+          return (
+            <span 
+              key={`${index}-${subIndex}`}
+              className="message-mention"
+              style={{ 
+                color: 'var(--colour-mention)',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (window.showProfilePopup) {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  window.showProfilePopup(username, 'user', {
+                    x: rect.left,
+                    y: rect.bottom + 10
+                  });
+                }
+              }}
+              title={`Mention: ${subPart}`}
+            >
+              {subPart}
+            </span>
+          );
+        }
+        return subPart;
+      });
+    }
+  });
+};
+
 const Message = ({ message, messageGroup }) => {
   // Handle both single messages and grouped messages
   const isGrouped = !!messageGroup;
@@ -119,17 +229,10 @@ const Message = ({ message, messageGroup }) => {
                 <em style={{ color: 'var(--colour-text-primary, #888)' }}>[deleted]</em>
               ) : (
                 <>
-                  {/* Render message text with clickable links */}
-                  {msg.message && !msg.mediaType && !msg.media && (
+                  {/* Render message text with clickable links and mentions */}
+                  {msg.message && (
                     <div className="message-text">
-                      {renderTextWithLinks(msg.message)}
-                    </div>
-                  )}
-                  
-                  {/* If message has text AND media, render text above media */}
-                  {msg.message && (msg.mediaType || msg.media) && (
-                    <div className="message-text">
-                      {renderTextWithLinks(msg.message)}
+                      {renderFormattedText(msg.message)}
                     </div>
                   )}
                   
