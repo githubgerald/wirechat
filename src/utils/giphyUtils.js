@@ -55,7 +55,7 @@ export function createGiphyMessage(gifUrl, title, username) {
   return {
     username: username || "User",
     userType: "user",
-    message: title || "Sent a GIF",
+    /**message: title || "Sent a GIF",**/
     mediaType: "image",
     mediaUrl: gifUrl,
     time: new Date().toLocaleTimeString([], {
