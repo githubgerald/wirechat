@@ -7,9 +7,18 @@ const TopBar = () => {
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [selectedProfile, setSelectedProfile] = useState({ username: '', userType: '' });
   const [profileDetail, setProfileDetail] = useState(null);
+  const [showChannelDropdown, setShowChannelDropdown] = useState(false);
   const profileRef = useRef(null);
+  const dropdownRef = useRef(null);
+  
   // Get both username and profile from context
-  const { currentChatId, channelNames, currentUsername, userProfile: myProfile } = useChat();
+  const { currentChatId, channelNames, currentUsername, userProfile: myProfile, chatSelect } = useChat();
+
+  // Define the same chat rooms as in ChatsSection
+  const chatRooms = [
+    { id: 1234, name: 'General' },
+    { id: 4321, name: 'Random' }
+  ];
 
   // Expose profile popup globally so messages can trigger it
   React.useEffect(() => {
@@ -25,6 +34,23 @@ const TopBar = () => {
     };
     return () => {
       delete window.showProfilePopup;
+    };
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowChannelDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
 
@@ -87,6 +113,22 @@ const TopBar = () => {
     console.log('Channel name changed');
   };
 
+  const toggleChannelDropdown = (e) => {
+    e.stopPropagation();
+    setShowChannelDropdown(prev => !prev);
+  };
+
+  const handleChannelSelect = (chatId) => {
+    console.log('Selecting chat from dropdown:', chatId);
+    chatSelect(chatId);
+    setShowChannelDropdown(false);
+  };
+
+  // Get current channel name for display
+  const currentChannelName = currentChatId && channelNames[currentChatId] 
+    ? channelNames[currentChatId] 
+    : (chatRooms.find(room => room.id === currentChatId)?.name || 'Select a chat');
+
   return (
     <div className="topBar">
       <div className="topBarProfile">
@@ -139,6 +181,7 @@ const TopBar = () => {
         <input className="settings" id="settingsBtn" type="button" />
       </div>
       
+      {/* Desktop Channel Name Input - Hidden on Mobile */}
       <div className="topBarChannel">
         <form onSubmit={handleChannelNameSubmit}>
           <input type="submit" id="channelSubmit" style={{ display: 'none' }} />
@@ -147,10 +190,35 @@ const TopBar = () => {
             id="channelName" 
             type="text" 
             placeholder="Channel Name"
-            value={currentChatId && channelNames[currentChatId] ? channelNames[currentChatId] : 'Select a chat'}
+            value={currentChannelName}
             readOnly
           />
         </form>
+      </div>
+
+      {/* Mobile Channel Dropdown */}
+      <div className="mobile-channel-dropdown" ref={dropdownRef}>
+        <button 
+          className="mobile-channel-button"
+          onClick={toggleChannelDropdown}
+        >
+          {currentChannelName}
+          <span>▼</span>
+        </button>
+        
+        {showChannelDropdown && (
+          <div className="mobile-channel-list">
+            {chatRooms.map(room => (
+              <div
+                key={room.id}
+                className={`mobile-channel-item ${currentChatId === room.id ? 'active' : ''}`}
+                onClick={() => handleChannelSelect(room.id)}
+              >
+                {channelNames[room.id] || room.name || `Room ${room.id}`}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       
       <div className="topBarTime">
@@ -169,23 +237,37 @@ const TopBar = () => {
 };
 
 const TimeDisplay = () => {
-  const [currentTime, setCurrentTime] = useState('');
+  const [currentTime, setCurrentTime] = React.useState('');
+  const [is24Hour, setIs24Hour] = React.useState(true);
 
   React.useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      const hours = String(now.getHours()).padStart(2, "0");
-      const minutes = String(now.getMinutes()).padStart(2, "0");
-      setCurrentTime(`${hours}:${minutes}`);
+      if (is24Hour) {
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        setCurrentTime(`${hours}:${minutes}`);
+      } else {
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        if (hours === 0) hours = 12;
+        setCurrentTime(`${hours}:${minutes} ${ampm}`);
+      }
     };
 
     updateTime();
     const interval = setInterval(updateTime, 60000);
-    
     return () => clearInterval(interval);
-  }, []);
+  }, [is24Hour]);
 
-  return <span id="timeTxt">{currentTime}</span>;
+  const handleClick = () => {
+    setIs24Hour(prev => !prev);
+  };
+
+  return <span id="timeTxt" onClick={handleClick} style={{ cursor: 'pointer' }}>{currentTime}</span>;
 };
+
 
 export default TopBar;

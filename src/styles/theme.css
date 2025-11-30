@@ -340,6 +340,7 @@ body .channelText {
   border-right: solid 8px var(--colour-primary-low-opacity);
   border-bottom: solid 8px var(--colour-primary);
   border-left: solid 8px var(--colour-primary-low-opacity);
+  background: transparent;
   color: var(--colour-primary);
   transition: none;
   box-sizing: border-box;
@@ -351,6 +352,7 @@ body .channelText {
   border-right: solid 8px var(--colour-primary);
   border-bottom: solid 8px var(--section-bg); 
   border-left: solid 8px var(--colour-primary);
+  background: var(--section-bg);
   color: var(--colour-primary);
   transition: none;
 }

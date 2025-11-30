@@ -24,6 +24,9 @@ export const ChatProvider = ({ children }) => {
   const [userProfile, setUserProfile] = useLocalStorage('userProfile', {});
   const [userSettings, setUserSettings] = useLocalStorage('userSettings', {});
   const [userPermissions, setUserPermissions] = useLocalStorage('userPermissions', []);
+  
+  // Add available chats for mobile dropdown
+  const [availableChats, setAvailableChats] = useState([1, 2, 3, 4, 5]);
 
   // Point to Flask server on port 5000
   const API_BASE_URL = "http://localhost:5000/api/v0/chats/";
@@ -180,7 +183,7 @@ export const ChatProvider = ({ children }) => {
     const messageData = {
       username: currentUsername,
       userType: userType,
-      message: messageText || (files.length === 1 ? `Shared ${files[0].name}` : `Shared ${files.length} files`),
+      // message: messageText || (files.length === 1 ? `Shared ${files[0].name}` : `Shared ${files.length} files`),
       media: media,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       date: new Date().toLocaleDateString()
@@ -351,6 +354,7 @@ export const ChatProvider = ({ children }) => {
     userProfile,
     userSettings,
     userPermissions,
+    availableChats, // Add available chats for mobile dropdown
     
     // Actions
     chatSelect,

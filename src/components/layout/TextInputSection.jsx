@@ -89,7 +89,7 @@ const MessageButtonsWrapper = ({ activeMode, onModeChange }) => {
         <input 
           id="chatBtn" 
           name="chatButton" 
-          type="checkbox" 
+          type="radio" 
           checked={activeMode === 'chat'}
           onChange={() => onModeChange('chat')}
         />
@@ -101,7 +101,7 @@ const MessageButtonsWrapper = ({ activeMode, onModeChange }) => {
         <input 
           id="shareBtn" 
           name="shareButton" 
-          type="checkbox" 
+          type="radio" 
           checked={activeMode === 'share'}
           onChange={() => onModeChange('share')}
         />
@@ -121,16 +121,20 @@ const ChatMode = ({ message, onMessageChange, onSend, onKeyPress, selectedFiles,
     searchTerm: ''
   });
   const textareaRef = msgBoxRef || useRef(null);
+  const fileInputRef = useRef(null);
   const { users } = useChat();
 
   React.useEffect(() => {
     setCharCount(message ? message.length : 0);
   }, [message]);
 
-  // ADD THE MISSING handleFileSelect FUNCTION
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
     setSelectedFiles(files);
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const handleMessageChange = (e) => {
@@ -230,11 +234,25 @@ const ChatMode = ({ message, onMessageChange, onSend, onKeyPress, selectedFiles,
     onKeyPress(e);
   };
 
+  // Fixed: Remove the label click handler, only use button to trigger input
+  const handleFileButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <div id="chatMode" style={{ position: 'relative' }}>
       <FilePreview files={selectedFiles} onRemove={onRemoveFile} />
       
-      <label htmlFor="fileUpload" className="fileUploadButton"></label>
+      {/* Fixed: Changed from label to div to prevent double prompt */}
+      <div 
+        className="fileUploadButton"
+        onClick={handleFileButtonClick}
+        role="button"
+        tabIndex={0}
+        aria-label="Upload file"
+      />
       <input 
         className="fileUpload" 
         id="fileUpload" 
@@ -242,6 +260,8 @@ const ChatMode = ({ message, onMessageChange, onSend, onKeyPress, selectedFiles,
         multiple 
         accept="image/*,video/*"
         onChange={handleFileSelect}
+        ref={fileInputRef}
+        style={{ display: 'none' }}
       />
 
       <textarea 
@@ -278,7 +298,6 @@ const ChatMode = ({ message, onMessageChange, onSend, onKeyPress, selectedFiles,
 };
 
 const ShareMode = () => {
-  // ... keep your existing ShareMode implementation ...
   const { sendMessage, currentUsername, loadMessages } = useChat();
   const [giphyResults, setGiphyResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);

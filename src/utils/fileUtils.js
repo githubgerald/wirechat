@@ -134,7 +134,7 @@ export const downloadFile = (url, filename) => {
   document.body.removeChild(link);
 };
 
-export const compressImage = (file, quality = 0.8, maxWidth = 1920) => {
+export const compressImage = (file, quality = 1, maxWidth = 1920) => {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {
